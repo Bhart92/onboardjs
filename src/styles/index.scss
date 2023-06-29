@@ -1,0 +1,23 @@
+.onboard-background {
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: all 0.35s ease;
+  display: block;
+  z-index: 1;
+  &.inactive {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+.active-sequence {
+  background: orange;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
