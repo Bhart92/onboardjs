@@ -1,95 +1,140 @@
 const onboard = {
-  // sets up basic things needed for functionality
-  init: function (
-    sequenceTargetClass = "onboarder",
-    backgroundParentWrapper = "body"
-  ) {
-    // Create background and add it to parent element (body tag by default)
-    const background = document.createElement("div");
-    background.classList.add("onboard-background", "inactive");
-    document.querySelector(backgroundParentWrapper).appendChild(background);
-    this.backgroundElement = background;
-
-    // Grab all elements with the class passed in as the parameter 'sequenceTargetClass'
-    // sort ascending order them using the data-sequence attribute
-    const targets = Array.from(
-      document.querySelectorAll(`.${sequenceTargetClass}`)
-    ).sort(function (a, b) {
-      return +a.dataset.sequence - +b.dataset.sequence;
-    });
-
-    // save elements to object
-    this.sequenceElements = targets;
-
-    // calculate length of array of elements
-    this.finalIndex = targets.length - 1;
-
-    // set initialization to true if we can grab an array of elements
-    if (this.sequenceElements.length <= 1) {
-      this.initialized = true;
-    }
-  },
   initialized: false,
+
+  onboardingTarget: "onboard-hint",
   sequenceElements: [],
   isrunning: false,
+
+  hasBackground: true,
   backgroundElement: null,
-  backgroundActive: false,
+
+  currentHintType: "timed",
 
   currIndex: 0,
   finalIndex: null,
-  startSequencer: function () {
-    // if onboarding is running prevent it from running in another instance
-    // if background has not been created yet - prevent from running
-    if (!onboard.backgroundElement || onboard.isrunning) return;
 
+  // sets up basic things needed for functionality
+  init: function ({
+    hasBackground = true,
+    backgroundParentWrapper = "body",
+    color = "rgba( 0, 0, 0, .5)",
+  } = {}) {
+    // if background is false then update value on obj
+    if (!hasBackground) this.hasBackground = hasBackground;
+    // Create background and add it to parent element (body tag by default)
+    if (this.hasBackground) {
+      const background = document.createElement("div");
+      background.style.background = color;
+      background.classList.add("onboard-background", "inactive");
+      document.querySelector(backgroundParentWrapper).appendChild(background);
+      this.backgroundElement = background;
+    }
+
+    // Grab all elements with the 'onboard-hint' class
+    // sort them ascending order using the data-sequence attribute
+    const sequencingTargets = Array.from(
+      document.querySelectorAll(`.${this.onboardingTarget}`)
+    ).sort(function (a, b) {
+      return +a.dataset.sequence - +b.dataset.sequence;
+    });
+    sequencingTargets.map((current) => (current.style.position = "absolute"));
+
+    // If no sequencing targets are found then throw error
+    if (sequencingTargets.length === 0)
+      throw new Error(
+        "Cannot find target elements. Please ensure DOM is loaded before onboard is initialized."
+      );
+
+    // save elements to object
+    this.sequenceElements = sequencingTargets;
+
+    // set initialization to true if we can grab an array of elements
+    if (this.sequenceElements.length <= 1) this.initialized = true;
+  },
+  // Begin the sequencer
+  startTimedSequencer: function () {
     // begin onboarding
-    onboard.isrunning = true;
+    if (!onboard.isrunning) onboard.isrunning = true;
+
+    let currentSequence = onboard.sequenceElements[onboard.currIndex];
+
+    let sequenceType = currentSequence.dataset.type || "timed";
+    onboard.currentHintType = sequenceType;
+    let sequencePos = currentSequence.dataset.position
+      ? JSON.parse(currentSequence.dataset.position)
+      : {
+          top: "0px",
+          right: "0px",
+        };
+    let sequencePosFormat = sequencePos?.format ? sequencePos.format : "px";
+
+    if (sequencePos.hasOwnProperty("top"))
+      currentSequence.style.top = `${sequencePos.top}${sequencePosFormat}`;
+    if (sequencePos.hasOwnProperty("right"))
+      currentSequence.style.right = `${sequencePos.right}${sequencePosFormat}`;
+    if (sequencePos.hasOwnProperty("bottom"))
+      currentSequence.style.bottom = `${sequencePos.bottom}${sequencePosFormat}`;
+    if (sequencePos.hasOwnProperty("left"))
+      currentSequence.style.left = `${sequencePos.left}${sequencePosFormat}`;
+
+    let sequenceTimer = currentSequence.dataset.timer || 2500;
+
+    let elementParent = currentSequence.parentElement;
+
+    elementParent.style.position = "relative";
+
+    // calculate length of array of elements
+    onboard.finalIndex = onboard.sequenceElements.length - 1;
 
     // Display background
-    onboard.backgroundElement.classList.toggle("inactive");
-    onboard.backgroundActive = true;
+    if (onboard.hasBackground) onboard.toggleBackground();
 
     // Toggles the first onboarding sequence
-    onboard.sequenceElements[onboard.currIndex].classList.add(
-      "active-sequence"
-    );
+    currentSequence.classList.add("active-sequence");
+    if (sequenceType === "timed") {
+      const timeout = setTimeout(() => {
+        onboard.removeActiveClass(onboard.currIndex);
 
-    // begins the interval for setting the remaining sequences
-    const interval = setInterval(() => {
-      // checks if current index is less than or equal to final index of sequence array
-      if (onboard.currIndex <= onboard.finalIndex) {
-        // removes active class from first step
-        onboard.removeActiveClass(0);
+        // Iterates to next step and clears timeout
+        onboard.currIndex += 1;
 
-        // Adds active class to next step in the array
-        onboard.sequenceElements[onboard.currIndex].classList.add(
-          "active-sequence"
-        );
-
-        // After 2 seconds removes active class from current step before iteration
-        const timeout = setTimeout(() => {
-          onboard.removeActiveClass(onboard.currIndex);
-
-          // Iterates to next step and clears timeout
-          onboard.currIndex += 1;
+        if (onboard.currIndex > onboard.finalIndex) {
           clearTimeout(timeout);
-        }, 2000);
-      } else {
-        // onboarding is finished
-        onboard.isrunning = false;
-        // hide background
-        onboard.backgroundElement.classList.add("inactive");
-        // stops onboarder
-        onboard.resetSequencer(interval);
-        return;
-      }
-    }, 2500);
+          onboard.resetSequencer();
+          if (onboard.hasBackground) onboard.toggleBackground(true);
+          return;
+        }
+        onboard.startTimedSequencer();
+      }, sequenceTimer);
+      return;
+    }
+  },
+  toggleConfirmSequence: function () {
+    if (onboard.currentHintType === "timed") return;
+    console.log("fired confirm");
+    // Iterates to next step and clears timeout
+
+    onboard.removeActiveClass(onboard.currIndex);
+    onboard.currIndex += 1;
+    if (onboard.currIndex > onboard.finalIndex) {
+      onboard.resetSequencer();
+      onboard.toggleBackground(true);
+      return;
+    }
+    onboard.startTimedSequencer();
+  },
+  toggleBackground: function (boolean = false) {
+    // true turns background off
+    // false turns background on
+    return boolean
+      ? onboard.backgroundElement.classList.add("inactive")
+      : onboard.backgroundElement.classList.remove("inactive");
   },
   // used to remove active class from sequence
   removeActiveClass: function (i) {
     onboard.sequenceElements[i].classList.remove("active-sequence");
   },
-  // resets all variables used for tracking status of onboarder
+  // resets all variables used for tracking status of onboard-hint
   resetSequencer: function (interval) {
     clearInterval(interval);
     onboard.initialized = false;
@@ -97,8 +142,7 @@ const onboard = {
 
     onboard.currIndex = 0;
     onboard.finalIndex = null;
-    onboard.backgroundElement.classList.add("inactive");
-    onboard.backgroundActive = false;
+    if (onboard.hasBackground) onboard.toggleBackground(true);
   },
 };
 export default onboard;
