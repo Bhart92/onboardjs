@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/index.scss";
 import "../../styles/example.scss";
 import img from "../img/onboard.png";
 import onboard from "../../js/onboard";
 const Landing = () => {
-  const backgroundOptions = {
-    color: "rgba(35, 42, 0, .65)",
-  };
   useEffect(() => {
     onboard.init();
   }, []);
@@ -17,14 +14,15 @@ const Landing = () => {
         {/* Onboarding hint card */}
         <div
           className="onboard-hint onboard-dialogue-hint"
-          data-sequence={"1"}
-          data-timer={"2500"}
-          data-type={"confirm"}
-          data-position={JSON.stringify({
-            top: "50",
-            left: "50",
-            format: "%",
-          })}
+          // data-options={JSON.stringify({
+          //   sequenceOrder: "1",
+          //   timer: "2500",
+          //   type: "confirm",
+          //   position: {
+          //     top: "0",
+          //     left: "10%",
+          //   },
+          // })}
         >
           <div className="onboard-hint-wrapper">
             <span>Confirmation Dialogue!</span>
@@ -34,21 +32,25 @@ const Landing = () => {
       </div>
       <div className="body">
         <p>body</p>
-        <button onClick={onboard.startTimedSequencer}>toggleOnboard</button>
+        <button onClick={onboard.startSequencer}>toggleOnboard</button>
         {/* Onboarding hint card */}
         <div
-          className="onboard-hint onboard-image-hint"
-          data-sequence={"2"}
-          data-timer={"3500"}
-          data-type={"timed"}
-          data-position={JSON.stringify({
-            top: "50",
-            left: "50",
-            format: "%",
-          })}
+          className="onboard-hint onboard-dialogue-hint"
+          // data-options={JSON.stringify({
+          //   sequenceOrder: "2",
+          //   timer: "2500",
+          //   type: "confirm",
+          //   position: {
+          //     position: {
+          //       top: "25px",
+          //       left: "50%",
+          //     },
+          //   },
+          // })}
         >
           <div className="onboard-hint-wrapper">
-            <img src={img} alt={"img alt"} />
+            <span>Confirmation Dialogue!</span>
+            <button onClick={onboard.toggleConfirmSequence}>confirm</button>
           </div>
         </div>
       </div>
@@ -58,16 +60,19 @@ const Landing = () => {
         {/* Onboarding hint card */}
         <div
           className="onboard-hint onboard-dialogue-hint"
-          data-sequence={"3"}
-          data-type={"timed"}
-          data-position={JSON.stringify({
-            top: "50",
-            left: "50",
-            format: "%",
+          data-options={JSON.stringify({
+            sequenceOrder: "3",
+            timer: "5000",
+            type: "confirm",
+            position: {
+              bottom: "25px",
+              right: "10%",
+            },
           })}
         >
           <div className="onboard-hint-wrapper">
-            <span>Timed Dialogue</span>
+            <span>Confirmation Dialogue!</span>
+            <button onClick={onboard.toggleConfirmSequence}>confirm</button>
           </div>
         </div>
       </footer>

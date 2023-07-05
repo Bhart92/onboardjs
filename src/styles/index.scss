@@ -1,15 +1,15 @@
 .onboard-background {
+  display: block;
   height: 100%;
-  width: 100%;
+  pointer-events: none;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   transition: all 0.35s ease;
-  display: block;
+  width: 100%;
   z-index: 1;
-  pointer-events: none;
   &.inactive {
     opacity: 0;
   }
@@ -21,20 +21,20 @@
   transform: scale(0);
 }
 .onboard-dialogue-hint {
-  height: auto;
   background-color: white;
-  width: auto;
-  max-width: 350px;
-  min-height: 75px;
   border-radius: 10px;
   border: 1px solid black;
+  height: auto;
+  max-width: 350px;
+  min-height: 75px;
+  width: auto;
   .onboard-hint-wrapper {
-    display: flex;
     align-items: flex-start;
-    justify-content: center;
+    display: flex;
     flex-direction: column;
-    padding: 25px;
     height: 100%;
+    justify-content: center;
+    padding: 25px;
     width: 100%;
     span {
       margin-bottom: 10px;
@@ -54,10 +54,10 @@
   }
 }
 .active-sequence {
-  z-index: 2;
   opacity: 1;
-  transform: scale(1.25);
   pointer-events: all;
+  transform: scale(1.25);
+  z-index: 2;
   @media (prefers-reduced-motion: reduce) {
     transform: scale(1);
   }

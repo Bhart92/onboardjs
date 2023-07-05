@@ -1,10 +1,9 @@
 const onboard = {
   initialized: false,
 
-  onboardingTarget: "onboard-hint",
-  sequenceElements: [],
-  isrunning: false,
-
+  onboardingHintTarget: "onboard-hint",
+  hintElements: [],
+  isRunning: false,
   hasBackground: true,
   backgroundElement: null,
 
@@ -12,116 +11,169 @@ const onboard = {
 
   currIndex: 0,
   finalIndex: null,
-
-  // sets up basic things needed for functionality
-  init: function ({
-    hasBackground = true,
-    backgroundParentWrapper = "body",
-    color = "rgba( 0, 0, 0, .5)",
-  } = {}) {
+  // parameters control background color,
+  // wrapper it will attach to,
+  // or if its even required
+  init: function (
+    fx,
+    {
+      hasBackground = true,
+      backgroundParentWrapper = "body",
+      color = "rgba( 0, 0, 0, .5)",
+    } = {}
+  ) {
     // if background is false then update value on obj
     if (!hasBackground) this.hasBackground = hasBackground;
-    // Create background and add it to parent element (body tag by default)
+
     if (this.hasBackground) {
+      // create div
       const background = document.createElement("div");
+
+      // add background color
       background.style.background = color;
+
+      // add appropriate background classes
       background.classList.add("onboard-background", "inactive");
+
+      // attach to direct parent element - can be changed by object passed into init func
       document.querySelector(backgroundParentWrapper).appendChild(background);
+
+      // save background to obj
       this.backgroundElement = background;
     }
 
     // Grab all elements with the 'onboard-hint' class
-    // sort them ascending order using the data-sequence attribute
-    const sequencingTargets = Array.from(
-      document.querySelectorAll(`.${this.onboardingTarget}`)
+    const onboardHints = Array.from(
+      document.querySelectorAll(`.${this.onboardingHintTarget}`)
+      // sort them ascending order using the data-sequence attribute
     ).sort(function (a, b) {
-      return +a.dataset.sequence - +b.dataset.sequence;
+      return (
+        +a.dataset.options?.sequenceOrder - +b.dataset.options?.sequenceOrder
+      );
     });
-    sequencingTargets.map((current) => (current.style.position = "absolute"));
+    // force absolute positioning on all onboard hints
+    onboardHints.map(
+      (currentHint) => (currentHint.style.position = "absolute")
+    );
 
     // If no sequencing targets are found then throw error
-    if (sequencingTargets.length === 0)
+    if (onboardHints.length === 0)
       throw new Error(
         "Cannot find target elements. Please ensure DOM is loaded before onboard is initialized."
       );
 
-    // save elements to object
-    this.sequenceElements = sequencingTargets;
+    // save onbord hint elements to object
+    this.hintElements = onboardHints;
 
     // set initialization to true if we can grab an array of elements
-    if (this.sequenceElements.length <= 1) this.initialized = true;
+    if (this.hintElements.length <= 1) this.initialized = true;
   },
-  // Begin the sequencer
-  startTimedSequencer: function () {
-    // begin onboarding
-    if (!onboard.isrunning) onboard.isrunning = true;
+  startSequencer: function () {
+    // begin onboarding sequncer
+    if (!onboard.isRunning) onboard.isRunning = true;
 
-    let currentSequence = onboard.sequenceElements[onboard.currIndex];
+    let currentSequence = onboard.hintElements[onboard.currIndex];
 
-    let sequenceType = currentSequence.dataset.type || "timed";
+    let options = currentSequence.dataset?.options
+      ? JSON.parse(currentSequence.dataset.options)
+      : {};
+
+    const { type, timer, position } = options;
+
+    // currently supports timed and confirm
+    let sequenceType = type || "timed";
     onboard.currentHintType = sequenceType;
-    let sequencePos = currentSequence.dataset.position
-      ? JSON.parse(currentSequence.dataset.position)
-      : {
-          top: "0px",
-          right: "0px",
-        };
-    let sequencePosFormat = sequencePos?.format ? sequencePos.format : "px";
 
-    if (sequencePos.hasOwnProperty("top"))
-      currentSequence.style.top = `${sequencePos.top}${sequencePosFormat}`;
-    if (sequencePos.hasOwnProperty("right"))
-      currentSequence.style.right = `${sequencePos.right}${sequencePosFormat}`;
-    if (sequencePos.hasOwnProperty("bottom"))
-      currentSequence.style.bottom = `${sequencePos.bottom}${sequencePosFormat}`;
-    if (sequencePos.hasOwnProperty("left"))
-      currentSequence.style.left = `${sequencePos.left}${sequencePosFormat}`;
+    // absolute position relative to the direct parent element
+    // obj passed to each individual onboard hint element from data attribute
+    // JSON.stringify and JSON.parse are necessary to pass an object through data attribute
+    let sequencePos = position || {
+      top: "0px",
+      right: "0px",
+    };
 
-    let sequenceTimer = currentSequence.dataset.timer || 2500;
+    // Sets absolute positioning based on the presence of the corresponding
+    // property passed into the onboard elements data-position attribute
+    if (sequencePos?.top) currentSequence.style.top = sequencePos.top;
+    if (sequencePos?.right) currentSequence.style.right = sequencePos.right;
+    if (sequencePos?.bottom) currentSequence.style.bottom = sequencePos.bottom;
+    if (sequencePos?.left) currentSequence.style.left = sequencePos.left;
 
+    // amount of time for each timed onboard hint to be displayed
+    let sequenceTimer = timer || 2500;
+
+    // current onboard hint's direct parent element
     let elementParent = currentSequence.parentElement;
 
+    // force parent elements position to relative
+    // this forces the onboard hint's position to be relative to the direct parent element
     elementParent.style.position = "relative";
 
-    // calculate length of array of elements
-    onboard.finalIndex = onboard.sequenceElements.length - 1;
+    // final index of sequence elements array
+    onboard.finalIndex = onboard.hintElements.length - 1;
 
     // Display background
     if (onboard.hasBackground) onboard.toggleBackground();
 
-    // Toggles the first onboarding sequence
+    // Toggles the first onboarding hint in hintElements array
     currentSequence.classList.add("active-sequence");
+
+    // checks current onboard hint if it is timed, or confirmation
     if (sequenceType === "timed") {
-      const timeout = setTimeout(() => {
-        onboard.removeActiveClass(onboard.currIndex);
-
-        // Iterates to next step and clears timeout
-        onboard.currIndex += 1;
-
-        if (onboard.currIndex > onboard.finalIndex) {
-          clearTimeout(timeout);
-          onboard.resetSequencer();
-          if (onboard.hasBackground) onboard.toggleBackground(true);
-          return;
-        }
-        onboard.startTimedSequencer();
-      }, sequenceTimer);
+      // if type is timer then begin the timeout
+      // pass in the value grabbed from data-timer attribute on our onboard-hint element
+      onboard.toggleTimedSequence(sequenceTimer);
       return;
     }
   },
-  toggleConfirmSequence: function () {
-    if (onboard.currentHintType === "timed") return;
-    console.log("fired confirm");
-    // Iterates to next step and clears timeout
+  toggleTimedSequence: (sequenceTimer) => {
+    // if type is timer then begin the timeout
+    // pass in the value grabbed from data-timer attribute on our onboard-hint element
+    const timeout = setTimeout(() => {
+      // when timer is finished remove active class from current onboard hint
+      onboard.removeActiveClass(onboard.currIndex);
 
+      // Iterates to next onboard hint
+      onboard.currIndex += 1;
+
+      // Check if we iterate past final index
+      if (onboard.currIndex > onboard.finalIndex) {
+        // terminate timeout
+        clearTimeout(timeout);
+
+        // reset onboard sequencer
+        onboard.resetSequencer();
+
+        // toggle off background
+        if (onboard.hasBackground) onboard.toggleBackground(true);
+
+        return;
+      }
+
+      // if we are not at the final index fire the sequencer again
+      onboard.startSequencer();
+    }, sequenceTimer);
+  },
+  toggleConfirmSequence: function () {
+    // Prevent confirm button from firing if current onboard hint is type timed
+    if (onboard.currentHintType === "timed") return;
+
+    // remove active class from current onboard hint
     onboard.removeActiveClass(onboard.currIndex);
+
+    // iterate to next onboard hint
     onboard.currIndex += 1;
+
+    // Check if we iterate past final index
     if (onboard.currIndex > onboard.finalIndex) {
+      // reset onboard sequencer
       onboard.resetSequencer();
+
+      // toggle off background
       onboard.toggleBackground(true);
       return;
     }
-    onboard.startTimedSequencer();
+    onboard.startSequencer();
   },
   toggleBackground: function (boolean = false) {
     // true turns background off
@@ -130,19 +182,21 @@ const onboard = {
       ? onboard.backgroundElement.classList.add("inactive")
       : onboard.backgroundElement.classList.remove("inactive");
   },
-  // used to remove active class from sequence
   removeActiveClass: function (i) {
-    onboard.sequenceElements[i].classList.remove("active-sequence");
+    // remove active class from the currently active onboard hint
+    onboard.hintElements[i].classList.remove("active-sequence");
   },
-  // resets all variables used for tracking status of onboard-hint
-  resetSequencer: function (interval) {
-    clearInterval(interval);
+  resetSequencer: function () {
+    // reset initial values
     onboard.initialized = false;
-    onboard.isrunning = false;
-
+    onboard.isRunning = false;
     onboard.currIndex = 0;
     onboard.finalIndex = null;
+    // toggle background
     if (onboard.hasBackground) onboard.toggleBackground(true);
+  },
+  getisRunning: function () {
+    return onboard.isRunning;
   },
 };
 export default onboard;
