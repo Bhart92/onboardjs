@@ -14,14 +14,11 @@ const onboard = {
   // parameters control background color,
   // wrapper it will attach to,
   // or if its even required
-  init: function (
-    fx,
-    {
-      hasBackground = true,
-      backgroundParentWrapper = "body",
-      color = "rgba( 0, 0, 0, .5)",
-    } = {}
-  ) {
+  init: function ({
+    hasBackground = true,
+    backgroundParentWrapper = "body",
+    color = "rgba( 0, 0, 0, .5)",
+  } = {}) {
     // if background is false then update value on obj
     if (!hasBackground) this.hasBackground = hasBackground;
 
