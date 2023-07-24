@@ -196,4 +196,9 @@ const onboard = {
     return onboard.isRunning;
   },
 };
-module.exports = { onboard };
+
+define(function (require, exports, module) {
+  module.exports = {
+    onboard,
+  };
+});
