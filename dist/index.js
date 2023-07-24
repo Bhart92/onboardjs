@@ -1,4 +1,4 @@
-exports.onboard = function () {
+export default onboard = function () {
   return (onboard = {
     initialized: false,
 
