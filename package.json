@@ -1,8 +1,9 @@
 {
   "name": "onboardjs",
-  "version": "1.0.9",
+  "version": "1.0.7",
   "description": "An instructional sequencer - guide users using visual cues!",
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
