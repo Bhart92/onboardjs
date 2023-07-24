@@ -196,4 +196,4 @@ const onboard = {
     return onboard.isRunning;
   },
 };
-export default onboard;
+module.exports = { onboard };
