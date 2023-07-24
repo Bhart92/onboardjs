@@ -45,12 +45,18 @@ const onboard = {
       // sort them ascending order using the data-sequence attribute
     ).sort(function (a, b) {
       return (
-        +a.dataset.options?.sequenceOrder - +b.dataset.options?.sequenceOrder
+        JSON.parse(a.dataset.options).sequenceOrder -
+        JSON.parse(b.dataset.options).sequenceOrder
       );
     });
     // force absolute positioning on all onboard hints
     onboardHints.map(
       (currentHint) => (currentHint.style.position = "absolute")
+    );
+    Array.from(document.querySelectorAll(".onboard-hint button")).map((ele) =>
+      ele.addEventListener("click", () => {
+        onboard.toggleConfirmSequence();
+      })
     );
 
     // If no sequencing targets are found then throw error
@@ -65,7 +71,7 @@ const onboard = {
     // set initialization to true if we can grab an array of elements
     if (this.hintElements.length <= 1) this.initialized = true;
   },
-  startSequencer: function () {
+  startSequencer: function (next) {
     // begin onboarding sequncer
     if (!onboard.isRunning) onboard.isRunning = true;
 
@@ -75,26 +81,36 @@ const onboard = {
       ? JSON.parse(currentSequence.dataset.options)
       : {};
 
-    const { type, timer, position } = options;
-
+    const { type, timer, top, right, left, bottom } = options;
     // currently supports timed and confirm
     let sequenceType = type || "timed";
+
     onboard.currentHintType = sequenceType;
 
     // absolute position relative to the direct parent element
     // obj passed to each individual onboard hint element from data attribute
     // JSON.stringify and JSON.parse are necessary to pass an object through data attribute
-    let sequencePos = position || {
-      top: "0px",
-      right: "0px",
-    };
+    if (!top && !left && !bottom && !right) {
+      let sequencePos = {
+        top: "0px",
+        left: "50%",
+      };
+
+      currentSequence.style.top = sequencePos.top;
+
+      currentSequence.style.left = sequencePos.left;
+    }
 
     // Sets absolute positioning based on the presence of the corresponding
     // property passed into the onboard elements data-position attribute
-    if (sequencePos?.top) currentSequence.style.top = sequencePos.top;
-    if (sequencePos?.right) currentSequence.style.right = sequencePos.right;
-    if (sequencePos?.bottom) currentSequence.style.bottom = sequencePos.bottom;
-    if (sequencePos?.left) currentSequence.style.left = sequencePos.left;
+    if (top) {
+      currentSequence.style.top = top;
+    }
+    if (right) {
+      currentSequence.style.right = right;
+    }
+    if (bottom) currentSequence.style.bottom = bottom;
+    if (left) currentSequence.style.left = left;
 
     // amount of time for each timed onboard hint to be displayed
     let sequenceTimer = timer || 2500;
