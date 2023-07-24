@@ -1,6 +1,6 @@
 {
   "name": "onboardjs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An instructional sequencer - guide users using visual cues!",
   "main": "index.js",
   "scripts": {
