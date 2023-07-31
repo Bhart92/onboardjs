@@ -36,7 +36,7 @@ class OnboardController {
   ) {
     return new Promise((resolve) => {
       if (onFinishCallback) this.onFinishCallback = onFinishCallback;
-      // if background is false then update value on obj
+      // if background is false then update value
       if (!hasBackground) this.hasBackground = hasBackground;
 
       if (
