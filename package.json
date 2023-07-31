@@ -1,6 +1,6 @@
 {
   "name": "react-onboard",
-  "version": "12.1.0",
+  "version": "12.1.1",
   "description": "My webpack project",
   "main": "dist/index.js",
   "scripts": {
