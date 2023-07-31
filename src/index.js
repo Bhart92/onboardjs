@@ -27,12 +27,12 @@ class OnboardController {
     this.onFinishCallback = onFinishCallback;
   }
   init(
-    onFinishCallback = null,
     {
       hasBackground = true,
       backgroundParentWrapper = "body",
       backgroundColor = "rgba( 0, 0, 0, .5)",
-    } = {}
+    } = {},
+    onFinishCallback = null
   ) {
     return new Promise((resolve) => {
       if (onFinishCallback) this.onFinishCallback = onFinishCallback;
@@ -81,11 +81,10 @@ class OnboardController {
     });
   }
   checkInitialized() {
-    if (!this.initialized) {
+    if (!this.initialized)
       throw new Error(
-        "Module is not initialized. Please run this.init(). Refer to documentation for help and parameters."
+        "Module is not initialized. Please run this.init() before starting sequencer. Refer to documentation for help and arguments."
       );
-    }
   }
   startSequencer() {
     this.checkInitialized();
@@ -97,20 +96,38 @@ class OnboardController {
       ? JSON.parse(currentSequence.dataset.options)
       : {};
 
-    const { type, timer, position } = options;
+    const { sequenceOrder, type, timer, position, highlighting } = options;
 
     // // currently supports timed and confirm
-    let sequenceType = type || "timed";
+    let sequenceType = type !== undefined ? type : "timed";
     this.currentHintType = sequenceType;
+    this.checkTypes({ sequenceType, highlighting, position });
 
-    // // absolute position relative to the direct parent element
-    // // obj passed to each individual onboard hint element from data attribute
-    // // JSON.stringify and JSON.parse are necessary to pass an object through data attribute
+    // format position property
+    for (const pos in position) {
+      if (typeof position[pos] !== "string") {
+        throw new Error(
+          "Incorrect type passed to position options. Please ensure you are passing a string to your top, bottom, left, right inside of position object."
+        );
+      }
+
+      if (position[pos].includes(" ")) {
+        position[pos] = position[pos].replaceAll(" ", "");
+      }
+      if (
+        !position[pos].includes("%") &&
+        !position[pos].includes("px") &&
+        !position[pos].includes("rem") &&
+        !position[pos].includes("em")
+      ) {
+        position[pos] = `${position[pos]}px`;
+      }
+    }
+    // if position property is left blank it is set to a default position
     let sequencePos = position || {
       top: "0px",
       right: "0px",
     };
-
     // // Sets absolute positioning based on the presence of the corresponding
     // // property passed into the onboard elements data-position attribute
     if (sequencePos?.top) currentSequence.style.top = sequencePos.top;
@@ -128,6 +145,10 @@ class OnboardController {
     // // this forces the onboard hint's position to be relative to the direct parent element
     elementParent.style.position = "relative";
 
+    if (highlighting && this.hasBackground) {
+      this.toggleHighlighting(true);
+    }
+
     // // final index of sequence elements array
     this.finalIndex = this.hintElements.length - 1;
 
@@ -141,20 +162,40 @@ class OnboardController {
     if (sequenceType === "timed") {
       // if type is timer then begin the timeout
       // pass in the value grabbed from data-timer attribute on our onboard-hint element
-      this.toggleTimedSequence(sequenceTimer);
+      this.toggleTimedSequence(sequenceTimer, sequenceType);
       return;
     }
   }
-  toggleTimedSequence(
-    sequenceTimer,
-    onFinishCallback = () => console.log("finished")
-  ) {
+  checkTypes({}) {
+    const optionTypes = arguments[0];
+    if (typeof optionTypes.highlighting !== "boolean") {
+      throw new Error(
+        "Incorrect type passed to highlighting option. Please ensure Highlighting is passed a boolean."
+      );
+    }
+    if (typeof optionTypes.sequenceType !== "string") {
+      throw new Error(
+        "Incorrect type passed to type option. Please ensure type is passed a string containing either 'timed' or 'confirm'."
+      );
+    }
+    if (typeof optionTypes.position !== "object") {
+      throw new Error(
+        "Incorrect type passed to type position. Please ensure type is passed an object."
+      );
+    }
+  }
+  toggleTimedSequence(sequenceTimer, type, onFinishCallback) {
+    if (type !== "timed")
+      throw new Error(
+        "Improper usage of toggleTimedSequence. Please check your code or revisit documentation."
+      );
+
     this.checkInitialized(); // if type is timer then begin the timeout
     // pass in the value grabbed from data-timer attribute on our onboard-hint element
     const timeout = setTimeout(() => {
       // when timer is finished remove active class from current onboard hint
       this.removeActiveClass(this.currIndex);
-
+      this.toggleHighlighting(false);
       // Iterates to next onboard hint
       this.currIndex += 1;
 
@@ -182,6 +223,7 @@ class OnboardController {
     // Prevent confirm button from firing if current onboard hint is type timed
     if (this.currentHintType === "timed") return;
 
+    this.toggleHighlighting(false);
     // remove active class from current onboard hint
     this.removeActiveClass(this.currIndex);
 
@@ -211,11 +253,28 @@ class OnboardController {
       ? this.backgroundElement.classList.add("inactive")
       : this.backgroundElement.classList.remove("inactive");
   }
+  toggleHighlighting(bool) {
+    if (bool === undefined)
+      throw new Error(
+        "Improper usage of method: toggleHighlighting. Pleae revisit code, or documentation."
+      );
+
+    let parentDiv = this.hintElements[this.currIndex].parentElement;
+
+    if (bool) return (parentDiv.style.zIndex = "100000");
+    parentDiv.removeAttribute("style");
+    parentDiv.style.position = "relative";
+  }
   removeActiveClass(i) {
+    if (!i && i !== 0)
+      throw new Error(
+        "Improper usage of removeActiveClass. Please check your code or revisit documentation."
+      );
     // remove active class from the currently active onboard hint
     this.hintElements[i].classList.remove("active-sequence");
   }
   resetSequencer() {
+    // this.removeActiveClass(this.currIndex);
     // reset initial values
     this.initialized = false;
     this.isRunning = false;
@@ -225,13 +284,11 @@ class OnboardController {
     if (this.hasBackground) this.toggleBackground(true);
     if (this.onFinishCallback) this.onFinishCallback();
   }
-  getisRunning() {
-    return this.isRunning;
-  }
 }
 const OnboardHint = ({
   options = {
     sequenceOrder: 1,
+    highlighting: true,
     type: "timed",
     timer: 2500,
     position: {
