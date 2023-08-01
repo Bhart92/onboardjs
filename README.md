@@ -1,15 +1,3 @@
-# 🚀 Welcome to your new awesome project!
+# React-onboard
 
-This project has been created using **webpack-cli**, you can now run
-
-```
-npm run build
-```
-
-or
-
-```
-yarn build
-```
-
-to bundle your application
+## Visual UX onboarding & instructional sequencing tool
