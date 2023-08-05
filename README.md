@@ -27,8 +27,11 @@ Next, you want to import the OnboardController and OnboardHint component
 import { OnboardController, OnboardHint } from "react-onboard";
 ```
 <br/>
+
+## OnboardHint Component
+
 After everything is installed and imported into your project you will need to set up your onboarding content using the OnboardHint component.
-The component is used to wrap your custom content. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions. Click here for examples on different onboarding content.
+The component is used to wrap your custom content. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/><sub>Click here for examples on different onboarding content.</sub>
 
 <br/>
 
@@ -97,7 +100,11 @@ Or you can pass options to alter functionality.
 ```
 Click here to view options parameters.
 <br /><br/>
+
+## OnboardController
+
 Once you have all of your OnboardHints setup you can initalize and start the sequencer.
+<br/><sub>See below for parameters.</sub>
 ```
   // You can name this whatever you want
   const OC = new OnboardController();
@@ -116,4 +123,29 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
     OC.startSequencer();
   }, []);
 ```
-Click here to view all methods for the OnboardController and their respective parameters.
+| Methods | Description | 
+| :--- | --- |
+| init() | Creates the overlay, grabs all OnboardHints, and sorts them |
+| checkInitialized() | N/A |
+| startSequencer() | N/A |
+| checkOptionTypes({ }) | gfdgd |
+| toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | vdfvfd |
+| toggleConfirmSequence() | N/A |
+| toggleOverlay(boolean) | false |
+| toggleHighlighting(boolean) | N/A |
+| removeActiveClass(i) | N/A |
+| resetSequencer() | N/A |
+
+| Method Parameters | Defaults | 
+| :--- | --- |
+| init({background, backgroundParentWrapper, backgroundColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
+| checkInitialized() | N/A |
+| startSequencer() | N/A |
+| checkOptionTypes({ }) | { boolean, string, object } |
+| toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | 2500, 'timed', null |
+| toggleConfirmSequence() | N/A |
+| toggleOverlay(boolean) | false |
+| toggleHighlighting(boolean) | N/A |
+| removeActiveClass(i) | N/A |
+| resetSequencer() | N/A |
+
