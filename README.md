@@ -140,5 +140,5 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
 | toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | 2500, 'timed', null |
 | toggleConfirmSequence() | N/A |
 | toggleOverlay(boolean) | false |
-.
+
 
