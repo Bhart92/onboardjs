@@ -98,7 +98,11 @@ Or you can pass options to alter functionality.
    </div>
 </OnboardHint>
 ```
-Click here to view options parameters.
+| Parameters | Defaults | 
+| :--- | --- |
+| options | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
+
+
 <br /><br/>
 
 ## OnboardController
