@@ -148,4 +148,5 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
 | toggleHighlighting(boolean) | N/A |
 | removeActiveClass(i) | N/A |
 | resetSequencer() | N/A |
+.
 
