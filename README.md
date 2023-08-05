@@ -126,27 +126,19 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
 | Methods | Description | 
 | :--- | --- |
 | init() | Creates the overlay, grabs all OnboardHints, and sorts them |
-| checkInitialized() | N/A |
-| startSequencer() | N/A |
-| checkOptionTypes({ }) | gfdgd |
-| toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | vdfvfd |
-| toggleConfirmSequence() | N/A |
-| toggleOverlay(boolean) | false |
-| toggleHighlighting(boolean) | N/A |
-| removeActiveClass(i) | N/A |
-| resetSequencer() | N/A |
+| startSequencer() | Begins the sequencer if first initialized|
+| checkOptionTypes() | Checks that all options passed into the OnboardHint are the correct type. Will throw errors if incorrect types are passed |
+| toggleTimedSequence() | Begins an timed OnboardHint Sequence |
+| toggleConfirmSequence() | Begins an confirmation OnboardHint Sequence |
+| toggleOverlay() | Toggles the overlay on and off |
 
 | Method Parameters | Defaults | 
 | :--- | --- |
 | init({background, backgroundParentWrapper, backgroundColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
-| checkInitialized() | N/A |
 | startSequencer() | N/A |
 | checkOptionTypes({ }) | { boolean, string, object } |
 | toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | 2500, 'timed', null |
 | toggleConfirmSequence() | N/A |
 | toggleOverlay(boolean) | false |
-| toggleHighlighting(boolean) | N/A |
-| removeActiveClass(i) | N/A |
-| resetSequencer() | N/A |
 .
 
