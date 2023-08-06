@@ -125,7 +125,7 @@ const OC = new OnboardController();
 </OnboardHint>
 ```
 
-<br/><br/>
+<br/>
 
 | Options Parameters | Defaults | Options | Description |
 | :--- | :--- | :-- | :--- |
@@ -172,7 +172,7 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
 
 | Method Parameters | Defaults | 
 | :--- | --- |
-| init({background, backgroundParentWrapper, backgroundColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
+| init({overlay, overlayParentWrapper, overlaydColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
 | startSequencer() | N/A |
 | checkOptionTypes({ }) | { boolean, string, object } |
 | toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | 2500, 'timed', null |
