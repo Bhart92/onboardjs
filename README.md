@@ -89,7 +89,8 @@ Or you can pass options to alter functionality.
          bottom: "20px",
          right: "20px",
       },
-   }}
+   }},
+   classes=[ 'customClassOne', customClassTwo' ]
 >
    <div>
       <h1>
@@ -98,12 +99,45 @@ Or you can pass options to alter functionality.
    </div>
 </OnboardHint>
 ```
-| Parameters | Defaults | 
-| :--- | --- |
-| options | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
 
+<br/>
 
-<br /><br/>
+There are two types on OnboardHint behaviors: timed and confirm.
+Timed OnboardHints will run out of the box. Confirm OnboardHints give you more control since you determine when the sequencer increments. You can force users to acknowledge instructions, or add videos, dialogues, and carousels.
+
+<br/>
+When using confirm OnboardHints you can increment the sequencer by calling the toggleConfirmSequence method on the OnboardController.
+<br/>
+
+Example:
+```
+import { OnboardController } from 'react-onboard';
+const OC = new OnboardController();
+<OnboardHint
+   options={{
+      type: "confirm",
+      position: {
+         bottom: "20px", 
+         right: "0", 
+       },
+   }} >
+   <button onClick={() => OC.toggleConfirmSequence()}>confirm</button>
+</OnboardHint>
+```
+
+<br/><br/>
+
+| Options Parameters | Defaults | Options | Description |
+| :--- | :--- | :-- | :--- |
+| sequenceOrder  |  Order they appear in the DOM. | Number | Tells onboard controller which order to place the Hints.  |
+| hightlighting  |  true<br/>__<sub>boolean required</sub>__ | true / false | Tells onboard to include the parent div when toggling OnboardHints. This makes the entire parent div light up during the sequencer y bringing its Z-index above the overlay. Overlay is required. |
+| type  |  'timed'<br/>__<sub>string required</sub>__ | 'timed' / 'confirm' | Determines if OnboardHint is timed, or confirmation. For confirmation see configuration here. |
+| timer  |  2500<br/>__<sub>Requires type 'timed'</sub>__ | Number | Time in millseconds between type 'timed' OnboardHints. |
+| position  |  {top: 0,<br/>left: 0}<br/>__<sub>object required</sub>__  | 'px' / '%' /<br/>'em' / 'rem' | positions the OnboardHint relative to it's parent element. |
+
+| Classes Parameters | Defaults | Description |
+| :--- | :--- | :--- |
+| classes  | [ ] | An array of strings. A way to add custom classes to each OnboardHint. |
 
 ## OnboardController
 
