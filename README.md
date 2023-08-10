@@ -121,6 +121,7 @@ const OC = new OnboardController();
        },
    }} >
    <button onClick={() => OC.toggleConfirmSequence()}>confirm</button>
+   <img src='./someImg.jpg' alt='some image' />
 </OnboardHint>
 ```
 
