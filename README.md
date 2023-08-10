@@ -101,7 +101,9 @@ There are two types on OnboardHint behaviors: timed and confirm
 
 <br/>
 
-Timed OnboardHints will run out of the box. Confirm OnboardHints give you more control since you determine when the sequencer increments. You can force users to acknowledge instructions, or add videos, dialogues, and carousels.
+Timed OnboardHints will run out of the box.
+<br/>
+Confirm OnboardHints give you more control since you determine when the sequencer increments. You can force users to acknowledge instructions, or add videos, dialogues, and carousels.
 
 <br/>
 When using confirm OnboardHints you can increment the sequencer by calling the toggleConfirmSequence method on the OnboardController.
