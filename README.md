@@ -5,7 +5,7 @@
 _Guide users through your UX by using visual cues and element highlighting._<br><sub>React-onboard is lightweight, requires minimal dependencies, and has baked in error catching to guide users through configuration.</sub>_
 
 
-***There are two imports for this package. Both of these are necessary for the onboarder to run as expected. See below for methods and details on config:***
+***There are two imports for this package. Both of them are necessary for the onboarder to run as expected. See below for methods and details on config:***
 ````
 OnboardController - JS class that controls the functionality of the sequencer
 OnboardHint - React component that works with the OnboardController to wrap and display your onboarding content.
@@ -30,8 +30,7 @@ import { OnboardController, OnboardHint } from "react-onboard";
 
 ## OnboardHint Component
 
-Setup all of your onboarding content using the OnboardHint component to wrap them.<br/>
-The component is used to wrap your custom content. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/><sub>Click here for examples on different onboarding content.</sub>
+Setup all of your custom onboarding content using the OnboardHint component to wrap them. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/><sub>Click here for examples on different onboarding content.</sub>
 
 <br/>
 When deciding where to place your OnboardHint components keep in mind that they need to be a direct child of the parent element you wish to highlight when the sequencer is running.
@@ -42,25 +41,26 @@ Example:
 I have two input fields and a button that I want to highlight sequentially:
 
 <div>
-   <div> // I'm the parent div!
+   <div> // I'm the parent div! I will highlight when the overlay is active
       <input />
       <OnboardHint />  // My position is relative to my parent div
    </div>
 
-   <div> // I'm the parent div!
+   <div> // I'm the parent div! I will highlight when the overlay is active
       <input />
       <OnboardHint />  // My position is relative to my parent div
    </div>
     
-   <div> // I'm the parent div!
+   <div> // I'm the parent div! I will highlight when the overlay is active
       <button>Confirm</button>
       <OnboardHint />  // My position is relative to my parent div
    </div>
 </div>
 ```
 
-<br/>The OnboardHint component can be used with or without an options passed in.
+<br/>
 
+The OnboardHint component can be used with or without an options passed in.
 ```
 <OnboardHint>
    <div>
