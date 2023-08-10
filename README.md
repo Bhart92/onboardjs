@@ -30,7 +30,7 @@ import { OnboardController, OnboardHint } from "react-onboard";
 
 ## OnboardHint Component
 
-Setup all of your custom onboarding content using the OnboardHint component to wrap them. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/><sub>Click here for examples on different onboarding content.</sub>
+Setup all of your custom onboarding content using the OnboardHint component to wrap them. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/>
 
 <br/>
 When deciding where to place your OnboardHint components keep in mind that they need to be a direct child of the parent element you wish to highlight when the sequencer is running.
@@ -129,8 +129,8 @@ const OC = new OnboardController();
 ## OnboardHint Parameters
 | Options Parameters | Defaults | Options | Description |
 | :--- | :--- | :-- | :--- |
-| sequenceOrder  |  Order they appear in the DOM. | Number | Tells onboard controller which order to place the Hints.  |
-| hightlighting  |  true<br/>__<sub>boolean required</sub>__ | true / false | Tells onboard to include the parent div when toggling OnboardHints. This makes the entire parent div light up during the sequencer y bringing its Z-index above the overlay. Overlay is required. |
+| sequenceOrder  |  Order they appear in the DOM. | Number | Tells onboard controller which order to play the OnboardHints.  |
+| hightlighting  |  true<br/>__<sub>boolean required</sub>__ | true / false | Tells onboard to include the parent div when toggling OnboardHints. This causing the parent div to highlight - bringing its Z-index above the overlay. *Overlay is required* |
 | type  |  'timed'<br/>__<sub>string required</sub>__ | 'timed' / 'confirm' | Determines if OnboardHint is timed, or confirmation. For confirmation see configuration here. |
 | timer  |  2500<br/>__<sub>Requires type 'timed'</sub>__ | Number | Time in millseconds between type 'timed' OnboardHints. |
 | position  |  {top: 0,<br/>left: 0}<br/>__<sub>object required</sub>__  | 'px' / '%' /<br/>'em' / 'rem' | positions the OnboardHint relative to it's parent element. |
@@ -150,10 +150,11 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
   // Wrap in useEffect to ensure everything has loaded before initializing
   useEffect(() => {
     // You can call this with or without parameters
+    // values below are the defaults
     OC.init({
-      hasBackground = true,
-      backgroundParentWrapper = "body",
-      backgroundColor = "rgba( 0, 0, 0, .5)",
+      hasOverlay = true,
+      overlayParentWrapper = "body",
+      overlayColor = "rgba( 0, 0, 0, .5)",
     }, () => console.log('I'm a callback'));
 
     // You can call this function where/whenever you want the sequencer to actually begin
@@ -164,17 +165,17 @@ Once you have all of your OnboardHints setup you can initalize and start the seq
 | Methods | Description | 
 | :--- | --- |
 | init() | Creates the overlay, grabs all OnboardHints, and sorts them |
-| startSequencer() | Begins the sequencer if first initialized|
+| startSequencer() | Begins the sequencer if its initialized|
 | checkOptionTypes() | Checks that all options passed into the OnboardHint are the correct type. Will throw errors if incorrect types are passed |
-| toggleTimedSequence() | Begins an timed OnboardHint Sequence |
-| toggleConfirmSequence() | Begins an confirmation OnboardHint Sequence |
+| toggleTimedSequence() | Begins a timed OnboardHint sequence |
+| toggleConfirmSequence() | Begins a confirmation OnboardHint sequence |
 | toggleOverlay() | Toggles the overlay on and off |
 
 | Method Parameters | Defaults | 
 | :--- | --- |
-| init({overlay, overlayParentWrapper, overlaydColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
+| init({overlay, overlayParentWrapper, overlayColor}, callbackFX) | { true, "body", "rgba( 0, 0, 0, .5)" }, null |
 | startSequencer() | N/A |
-| checkOptionTypes({ }) | { boolean, string, object } |
+| checkOptionTypes({ }) | { } |
 | toggleTimedSequence(sequenceTimer, type, onFinishCallback)` | 2500, 'timed', null |
 | toggleConfirmSequence() | N/A |
 | toggleOverlay(boolean) | false |
