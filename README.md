@@ -2,7 +2,7 @@
 
 ## Visual UX onboarding & instructional sequencing tool
 
-_Guide users through your UX by using visual cues and element highlighting._<br><sub>React-onboard is lightweight, requires minimal dependencies, and has baked in error catching to guide users through configuration._</sub>
+_Guide users through your UX by using visual cues and element highlighting._<br><sub>React-onboard is lightweight, requires minimal dependencies, and has baked in error catching to guide users through configuration.</sub>_
 
 
 ***There are two imports for this package. Both of these are necessary for the onboarder to run as expected. See below for methods and details on config:***
@@ -11,7 +11,7 @@ OnboardController - JS class that controls the functionality of the sequencer
 OnboardHint - React component that works with the OnboardController to wrap and display your onboarding content.
 ````
 ## Get Started
-To get started you must first install the package:
+To get started install the package:
 ```
 npm i react-onboard
 
@@ -30,12 +30,11 @@ import { OnboardController, OnboardHint } from "react-onboard";
 
 ## OnboardHint Component
 
-After everything is installed and imported into your project you will need to set up your onboarding content using the OnboardHint component.
+Setup all of your onboarding content using the OnboardHint component to wrap them.<br/>
 The component is used to wrap your custom content. The wrapper can contain any kind of content - carousels, images, videos, or plain text instructions.<br/><sub>Click here for examples on different onboarding content.</sub>
 
 <br/>
-
-When setting up your OnboardHint you will want to place it in your DOM so that it is a direct child of the parent element you wish to call attention to when the sequencer is running.
+When deciding where to place your OnboardHint components keep in mind that they need to be a direct child of the parent element you wish to highlight when the sequencer is running.
 <br/>
 Example:
 
@@ -43,34 +42,30 @@ Example:
 I have two input fields and a button that I want to highlight sequentially:
 
 <div>
-    // I'm the parent div!
-   <div>
+   <div> // I'm the parent div!
       <input />
-       // My position is relative to my parent div
-      <OnboardHint />
+      <OnboardHint />  // My position is relative to my parent div
    </div>
-    // I'm the parent div!
-   <div>
+
+   <div> // I'm the parent div!
       <input />
-       // My position is relative to my parent div
-      <OnboardHint />
+      <OnboardHint />  // My position is relative to my parent div
    </div>
-    // I'm the parent div!
-   <div>
+    
+   <div> // I'm the parent div!
       <button>Confirm</button>
-      // My position is relative to my parent div
-      <OnboardHint />
+      <OnboardHint />  // My position is relative to my parent div
    </div>
 </div>
 ```
 
-<br/>The OnboardHint component can be used with or without an options parameter passed in.
+<br/>The OnboardHint component can be used with or without an options passed in.
 
 ```
 <OnboardHint>
    <div>
       <h1>
-         I can wrap anything! Images, videos, whatever you want! try me!
+         I have no options passed, but thats A okay!
       </h1>
    </div>
 </OnboardHint>
@@ -102,7 +97,10 @@ Or you can pass options to alter functionality.
 
 <br/>
 
-There are two types on OnboardHint behaviors: timed and confirm.
+There are two types on OnboardHint behaviors: timed and confirm
+
+<br/>
+
 Timed OnboardHints will run out of the box. Confirm OnboardHints give you more control since you determine when the sequencer increments. You can force users to acknowledge instructions, or add videos, dialogues, and carousels.
 
 <br/>
